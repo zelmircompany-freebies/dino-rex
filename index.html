@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Dino Rex</title>
+<meta name="description" content="Dino Rex — бесконечный раннер про трицератопса">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23111%22/><text x=%2250%25%22 y=%2260%25%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23fff%22>🦕</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ==================== ЭКРАН ЗАГРУЗКИ ==================== -->
+<div id="boot-screen" class="boot-screen">
+  <div class="boot-inner">
+    <div class="boot-logo-wrap">
+      <svg class="boot-logo-mark" viewBox="0 0 64 64" width="72" height="72" aria-hidden="true">
+        <rect x="2" y="2" width="60" height="60" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M14 44 L14 34 L20 26 L26 26 L28 20 L34 18 L40 22 L42 30 L48 32 L50 38 L50 44 Z" fill="currentColor"/>
+        <rect x="18" y="44" width="4" height="7" fill="currentColor"/>
+        <rect x="40" y="44" width="4" height="7" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="boot-company">ZELMIR&nbsp;COMPANY</div>
+    <div class="boot-title">DINO&nbsp;REX</div>
+    <div class="boot-bar-track">
+      <div class="boot-bar-fill" id="boot-bar-fill"></div>
+    </div>
+    <div class="boot-status" id="boot-status">Загрузка ресурсов…</div>
+  </div>
+  <div class="boot-footer">© ZELMIR COMPANY</div>
+</div>
+
+<!-- ==================== ПОВОРОТ ЭКРАНА ==================== -->
+<div id="rotate-screen" class="rotate-screen">
+  <svg class="rotate-icon" viewBox="0 0 100 100" width="84" height="84" aria-hidden="true">
+    <rect x="30" y="10" width="40" height="60" rx="4" fill="none" stroke="currentColor" stroke-width="4"/>
+    <circle cx="50" cy="63" r="2.5" fill="currentColor"/>
+    <path d="M78 30 A34 34 0 1 1 60 8" fill="none" stroke="currentColor" stroke-width="4"/>
+    <path d="M78 30 L78 16 M78 30 L64 30" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+  </svg>
+  <div class="rotate-text">Поверните устройство<br>в горизонтальное положение</div>
+</div>
+
+<!-- ==================== БЕГУЩАЯ СТРОКА (промо) ==================== -->
+<div class="ticker" id="ticker" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track">
+    <span class="ticker-item">РЕКЛАМА&nbsp;·&nbsp;Бесплатная нейросеть нового поколения — попробуй бесплатно: <b>freebies-ai.site</b>&nbsp;&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <span class="ticker-item" aria-hidden="true">РЕКЛАМА&nbsp;·&nbsp;Бесплатная нейросеть нового поколения — попробуй бесплатно: <b>freebies-ai.site</b>&nbsp;&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  </div>
+</div>
+
+<!-- ==================== ГЛАВНЫЙ КОНТЕЙНЕР ПРИЛОЖЕНИЯ ==================== -->
+<div id="app" class="app">
+
+  <!-- ---------- ГЛАВНОЕ МЕНЮ ---------- -->
+  <section id="screen-menu" class="screen screen-menu active-screen">
+    <div class="menu-bg-grid" aria-hidden="true"></div>
+
+    <header class="menu-topbar">
+      <div class="brand">
+        <svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true">
+          <path d="M14 44 L14 34 L20 26 L26 26 L28 20 L34 18 L40 22 L42 30 L48 32 L50 38 L50 44 Z" fill="currentColor"/>
+        </svg>
+        <span>DINO&nbsp;REX</span>
+      </div>
+      <div class="topbar-stats">
+        <div class="stat-chip" title="Монеты">
+          <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" font-size="11" text-anchor="middle" fill="currentColor" font-family="Inter">c</text></svg>
+          <span id="hud-coins">0</span>
+        </div>
+        <div class="stat-chip" title="Рекорд">
+          <span class="chip-label">BEST</span>
+          <span id="hud-best">0</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="menu-stage">
+      <div class="menu-hero">
+        <canvas id="hero-canvas" width="420" height="260"></canvas>
+      </div>
+
+      <div class="menu-panel">
+        <h1 class="menu-game-title">DINO&nbsp;REX</h1>
+        <p class="menu-subtitle">Беги. Прыгай. Выживай.</p>
+
+        <nav class="menu-buttons">
+          <button class="btn btn-primary btn-play" id="btn-play">
+            <span class="btn-icon">▶</span> ИГРАТЬ
+          </button>
+          <div class="menu-grid">
+            <button class="btn btn-secondary" id="btn-shop">
+              <span class="btn-icon">🛒</span> Магазин
+            </button>
+            <button class="btn btn-secondary" id="btn-upgrades">
+              <span class="btn-icon">⚡</span> Улучшения
+            </button>
+            <button class="btn btn-secondary" id="btn-modes">
+              <span class="btn-icon">🎮</span> Режим игры
+            </button>
+            <button class="btn btn-secondary" id="btn-news">
+              <span class="btn-icon">📰</span> Новости
+            </button>
+            <button class="btn btn-secondary" id="btn-settings">
+              <span class="btn-icon">⚙</span> Настройки
+            </button>
+            <button class="btn btn-secondary btn-donate" id="btn-donate">
+              <span class="btn-icon">♥</span> Поддержать
+            </button>
+          </div>
+        </nav>
+
+        <div class="menu-mode-indicator">
+          Текущий режим: <b id="current-mode-label">Классика</b>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- МАГАЗИН ---------- -->
+  <section id="screen-shop" class="screen">
+    <header class="sub-header">
+      <button class="btn-back" data-back>← Назад</button>
+      <h2>Магазин</h2>
+      <div class="stat-chip"><span class="chip-label">c</span><span id="shop-coins">0</span></div>
+    </header>
+    <div class="shop-grid" id="shop-grid"><!-- заполняется JS --></div>
+  </section>
+
+  <!-- ---------- УЛУЧШЕНИЯ ---------- -->
+  <section id="screen-upgrades" class="screen">
+    <header class="sub-header">
+      <button class="btn-back" data-back>← Назад</button>
+      <h2>Улучшения</h2>
+      <div class="stat-chip"><span class="chip-label">c</span><span id="upgrades-coins">0</span></div>
+    </header>
+    <div class="upgrades-list" id="upgrades-list"><!-- заполняется JS --></div>
+  </section>
+
+  <!-- ---------- РЕЖИМЫ ИГРЫ ---------- -->
+  <section id="screen-modes" class="screen">
+    <header class="sub-header">
+      <button class="btn-back" data-back>← Назад</button>
+      <h2>Режим игры</h2>
+      <div></div>
+    </header>
+    <div class="modes-grid" id="modes-grid"><!-- заполняется JS --></div>
+  </section>
+
+  <!-- ---------- НОВОСТИ ---------- -->
+  <section id="screen-news" class="screen">
+    <header class="sub-header">
+      <button class="btn-back" data-back>← Назад</button>
+      <h2>Новости</h2>
+      <div></div>
+    </header>
+    <div class="empty-state">
+      <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><rect x="10" y="14" width="44" height="36" fill="none" stroke="currentColor" stroke-width="2.5"/><line x1="18" y1="24" x2="46" y2="24" stroke="currentColor" stroke-width="2"/><line x1="18" y1="31" x2="46" y2="31" stroke="currentColor" stroke-width="2"/><line x1="18" y1="38" x2="34" y2="38" stroke="currentColor" stroke-width="2"/></svg>
+      <p class="empty-title">Новостей пока нет</p>
+      <p class="empty-sub">Загляните позже — здесь будут появляться обновления игры.</p>
+    </div>
+  </section>
+
+  <!-- ---------- НАСТРОЙКИ ---------- -->
+  <section id="screen-settings" class="screen">
+    <header class="sub-header">
+      <button class="btn-back" data-back>← Назад</button>
+      <h2>Настройки</h2>
+      <div></div>
+    </header>
+    <div class="settings-list">
+
+      <div class="settings-group">
+        <h3 class="settings-group-title">Звук</h3>
+        <div class="settings-row">
+          <label for="toggle-music">Музыка</label>
+          <button class="toggle" id="toggle-music" role="switch" aria-checked="true"><span class="toggle-knob"></span></button>
+        </div>
+        <div class="settings-row">
+          <label for="toggle-sfx">Звуковые эффекты</label>
+          <button class="toggle" id="toggle-sfx" role="switch" aria-checked="true"><span class="toggle-knob"></span></button>
+        </div>
+        <div class="settings-row">
+          <label for="range-volume">Громкость</label>
+          <input type="range" id="range-volume" min="0" max="100" value="70" class="slider">
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <h3 class="settings-group-title">Визуальный режим</h3>
+        <div class="theme-options" id="theme-options"><!-- заполняется JS --></div>
+      </div>
+
+      <div class="settings-group">
+        <h3 class="settings-group-title">Управление</h3>
+        <div class="settings-row">
+          <label for="toggle-controls-hint">Показывать подсказки управления</label>
+          <button class="toggle" id="toggle-controls-hint" role="switch" aria-checked="true"><span class="toggle-knob"></span></button>
+        </div>
+        <div class="settings-row">
+          <label for="select-jump-key">Клавиша прыжка</label>
+          <select id="select-jump-key" class="select-input">
+            <option value="Space">Пробел</option>
+            <option value="ArrowUp">Стрелка вверх</option>
+            <option value="KeyW">W</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <label for="toggle-haptics">Вибрация (моб.)</label>
+          <button class="toggle" id="toggle-haptics" role="switch" aria-checked="true"><span class="toggle-knob"></span></button>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <button class="btn btn-secondary btn-danger" id="btn-reset-progress">Сбросить прогресс</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- ИГРОВОЙ ЭКРАН ---------- -->
+  <section id="screen-game" class="screen screen-game">
+    <div class="game-hud">
+      <div class="hud-left">
+        <div class="hud-score">
+          <span class="hud-score-label">СЧЁТ</span>
+          <span id="hud-current-score">00000</span>
+        </div>
+        <div class="hud-score hud-score-best">
+          <span class="hud-score-label">РЕКОРД</span>
+          <span id="hud-run-best">00000</span>
+        </div>
+      </div>
+      <div class="hud-center" id="hud-mode-banner">КЛАССИКА</div>
+      <div class="hud-right">
+        <button class="hud-btn" id="btn-pause" aria-label="Пауза">
+          <svg viewBox="0 0 24 24" width="20" height="20"><rect x="6" y="5" width="4" height="14" fill="currentColor"/><rect x="14" y="5" width="4" height="14" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <canvas id="game-canvas"></canvas>
+
+    <!-- сенсорное управление -->
+    <div class="touch-controls" id="touch-controls">
+      <button class="touch-btn touch-btn-left" id="btn-touch-left" aria-label="Влево">◀</button>
+      <button class="touch-btn touch-btn-jump" id="btn-touch-jump" aria-label="Прыжок">▲</button>
+      <button class="touch-btn touch-btn-duck" id="btn-touch-duck" aria-label="Присесть">▼</button>
+      <button class="touch-btn touch-btn-right" id="btn-touch-right" aria-label="Вправо">▶</button>
+    </div>
+
+    <div class="controls-hint" id="controls-hint">Пробел / тап — прыжок · ↓ — присесть</div>
+
+    <!-- экран старта забега (обратный отсчёт) -->
+    <div class="run-countdown" id="run-countdown"></div>
+
+    <!-- пауза -->
+    <div class="overlay overlay-pause" id="overlay-pause">
+      <div class="overlay-card">
+        <h2>Пауза</h2>
+        <button class="btn btn-primary" id="btn-resume">Продолжить</button>
+        <button class="btn btn-secondary" id="btn-restart-from-pause">Заново</button>
+        <button class="btn btn-secondary" id="btn-menu-from-pause">В меню</button>
+      </div>
+    </div>
+
+    <!-- проигрыш -->
+    <div class="overlay overlay-gameover" id="overlay-gameover">
+      <div class="overlay-card overlay-card-gameover">
+        <h2 id="gameover-title">ИГРА ОКОНЧЕНА</h2>
+        <div class="gameover-stats">
+          <div class="gameover-stat">
+            <span class="gameover-stat-label">Счёт</span>
+            <span class="gameover-stat-value" id="gameover-score">0</span>
+          </div>
+          <div class="gameover-stat">
+            <span class="gameover-stat-label">Рекорд</span>
+            <span class="gameover-stat-value" id="gameover-best">0</span>
+          </div>
+          <div class="gameover-stat">
+            <span class="gameover-stat-label">Монеты</span>
+            <span class="gameover-stat-value" id="gameover-coins">+0</span>
+          </div>
+        </div>
+        <div class="gameover-new-record" id="gameover-new-record">🏆 НОВЫЙ РЕКОРД!</div>
+        <div class="overlay-actions">
+          <button class="btn btn-primary" id="btn-restart">Заново</button>
+          <button class="btn btn-secondary" id="btn-gameover-menu">В меню</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
